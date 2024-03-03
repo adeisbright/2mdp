@@ -8,6 +8,6 @@ import (
 
 func main() {
 	fmt.Println("Start of the 2 Million Debtors Program")
-	customers := customer.GenerateCustomers(50)
+	customers := customer.GenerateCustomers(2000000)
 	fmt.Println(customers)
 }
