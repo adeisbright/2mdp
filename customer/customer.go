@@ -56,10 +56,10 @@ var Names = []string{
 
 const HIGHEST_OWED_AMOUNT_CAP = 1000000
 
-func (c *Customer) StringnifyCustomer() string {
+func (c *Customer) String() string {
 	return fmt.Sprintf("%d ,  %s , %s ,  %f  , %q , %d , %q \n", c.Id, c.Name, c.Code, c.Amount, c.LoanDate, c.LoanDuration, c.ExpiryDate)
 }
-func GenerateCustomers(customerCount int, store string) []Customer {
+func GenerateCustomers(customerCount int) []Customer {
 	for i := 0; i <= customerCount; i++ {
 		randomFirstName := Names[rand.Intn(len(Names))]
 		randomLastName := Names[rand.Intn(len(Names))]
@@ -69,6 +69,7 @@ func GenerateCustomers(customerCount int, store string) []Customer {
 
 		if err != nil {
 			fmt.Println(err.Error())
+			continue
 		}
 
 		randomDuration := rand.Intn(12) + 1
@@ -82,8 +83,6 @@ func GenerateCustomers(customerCount int, store string) []Customer {
 			ExpiryDate:   time.Now().Local().AddDate(0, randomDuration, 0),
 		}
 		AddToCustomers(customer)
-		customerString := customer.StringnifyCustomer()
-		filemanager.AddToFile(store, customerString)
 	}
 	return Customers
 }
@@ -102,4 +101,11 @@ func GetCustomer(customerCode string, customers []Customer) (*Customer, error) {
 		}
 	}
 	return nil, errors.New("not found")
+}
+
+func StoreCustomers(customers []Customer, store string) {
+	for _, customer := range customers {
+		customerString := customer.String()
+		filemanager.AddToFile(store, customerString)
+	}
 }

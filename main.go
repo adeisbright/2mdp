@@ -12,8 +12,8 @@ func main() {
 	customersFile, err := filemanager.CreateFile("debtors.txt")
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
-	//Generate Customers and store them in the provided store
-	customers := customer.GenerateCustomers(2000000, customersFile.Name())
-	fmt.Println(len(customers))
+	customers := customer.GenerateCustomers(2000000)
+	customer.StoreCustomers(customers, customersFile.Name())
 }
