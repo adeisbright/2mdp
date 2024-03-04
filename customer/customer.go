@@ -22,8 +22,8 @@ type Customer struct {
 
 var Customers []Customer
 
-func AddToCustomers(c *Customer) {
-	Customers = append(Customers, *c)
+func AddToCustomers(c Customer) {
+	Customers = append(Customers, c)
 }
 
 var Names = []string{
@@ -59,7 +59,7 @@ const HIGHEST_OWED_AMOUNT_CAP = 1000000
 func (c *Customer) StringnifyCustomer() string {
 	return fmt.Sprintf("%d ,  %s , %s ,  %f  , %q , %d , %q \n", c.Id, c.Name, c.Code, c.Amount, c.LoanDate, c.LoanDuration, c.ExpiryDate)
 }
-func GenerateCustomers(customerCount int) []Customer {
+func GenerateCustomers(customerCount int, store string) []Customer {
 	for i := 0; i <= customerCount; i++ {
 		randomFirstName := Names[rand.Intn(len(Names))]
 		randomLastName := Names[rand.Intn(len(Names))]
@@ -72,7 +72,7 @@ func GenerateCustomers(customerCount int) []Customer {
 		}
 
 		randomDuration := rand.Intn(12) + 1
-		customer := &Customer{
+		customer := Customer{
 			Id:           len(Customers) + 1,
 			Name:         customerName,
 			Amount:       randomAmount,
@@ -83,7 +83,7 @@ func GenerateCustomers(customerCount int) []Customer {
 		}
 		AddToCustomers(customer)
 		customerString := customer.StringnifyCustomer()
-		filemanager.AddToFile("customers.txt", customerString)
+		filemanager.AddToFile(store, customerString)
 	}
 	return Customers
 }
