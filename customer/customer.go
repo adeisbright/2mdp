@@ -1,10 +1,12 @@
 package customer
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
 
+	filemanager "github.com/adeisbright/2mdp/file_manager"
 	"github.com/adeisbright/2mdp/lib"
 )
 
@@ -54,6 +56,9 @@ var Names = []string{
 
 const HIGHEST_OWED_AMOUNT_CAP = 1000000
 
+func (c *Customer) StringnifyCustomer() string {
+	return fmt.Sprintf("%d ,  %s , %s ,  %f  , %q , %d , %q \n", c.Id, c.Name, c.Code, c.Amount, c.LoanDate, c.LoanDuration, c.ExpiryDate)
+}
 func GenerateCustomers(customerCount int) []Customer {
 	for i := 0; i <= customerCount; i++ {
 		randomFirstName := Names[rand.Intn(len(Names))]
@@ -66,16 +71,19 @@ func GenerateCustomers(customerCount int) []Customer {
 			fmt.Println(err.Error())
 		}
 
+		randomDuration := rand.Intn(12) + 1
 		customer := &Customer{
 			Id:           len(Customers) + 1,
 			Name:         customerName,
 			Amount:       randomAmount,
 			Code:         customerCode,
 			LoanDate:     time.Now(),
-			LoanDuration: 10,
-			ExpiryDate:   time.Now().Local().AddDate(0, 6, 0),
+			LoanDuration: randomDuration,
+			ExpiryDate:   time.Now().Local().AddDate(0, randomDuration, 0),
 		}
 		AddToCustomers(customer)
+		customerString := customer.StringnifyCustomer()
+		filemanager.AddToFile("customers.txt", customerString)
 	}
 	return Customers
 }
@@ -85,4 +93,13 @@ func DisplayCustomers(customers []Customer) {
 	for _, customer := range customers {
 		fmt.Println(customer)
 	}
+}
+
+func GetCustomer(customerCode string, customers []Customer) (*Customer, error) {
+	for _, value := range customers {
+		if value.Code == customerCode {
+			return &value, nil
+		}
+	}
+	return nil, errors.New("not found")
 }
